@@ -1,0 +1,48 @@
+# This file contains metadata for your plugin. Since 
+# version 2.0 of QGIS this is the proper way to supply 
+# information about a plugin. The old method of 
+# embedding metadata in __init__.py will 
+# is no longer supported since version 2.0.
+
+# This file should be included when you package your plugin.# Mandatory items:
+
+[general]
+name=Publi Base
+qgisMinimumVersion=3.0
+description=Processing plugin-based provider that adds scripts to export a schema for publishing and to do reambulation activities. Provedor do Processing que inclui scripts para exportar um esquema para publicação e para fazer atividades da reambulação. 
+            
+               
+version=0.1
+author=Marcel Rotunno (IBGE)
+email=marcelgaucho@yahoo.com.br
+
+about=The scripts are intended to export a PostGIS schema to different formats, such as geopackage and shapefile, in order to publish the cartographic database. The reambulation activities include exporting a PostGIS schema to geopackage and vice versa. It uses a script from the plugin Append Features to Layer, from Germán Carrillo.  
+
+      -------------------------------------------------------------------------------------------------------------------------------------
+      
+      Os scripts têm o objetivo de exportar um esquema do PostGIS para diferentes formatos, como geopackage e shapefile, para publicação da base cartográfica. As atividades da reambulação incluem a exportação de um esquema do PostGIS para geopackage e vice-versa. Usa um script do plugin Append Features to Layer, de Germán Carrillo.
+
+tracker=https://github.com/marcelgaucho/PubliBase/issues
+repository=https://github.com/marcelgaucho/PubliBase
+# End of mandatory metadata
+
+# Recommended items:
+
+# Uncomment the following line and add your changelog:
+changelog=0.1
+      - Start of the plugin
+
+
+
+# Tags are comma separated with spaces allowed
+tags=processing,provider,PostGIS,IBGE
+
+homepage=https://github.com/marcelgaucho/PubliBase
+category=Processing
+icon=images/icon.png
+# experimental flag
+experimental=True
+
+# deprecated flag (applies to the whole plugin, not just a single version)
+deprecated=False
+
