@@ -28,8 +28,7 @@ from .algs.postgis_schema2geopackage_reambulation import PostGISSchema2Geopackag
 from .algs.geopackage2postgis_schema_reambulation import Geopackage2PostGISSchemaReambulation
 from .algs.postgis_schema2shapefile import PostGISSchema2Shapefile
 from .algs.AppendFeaturesToLayer import AppendFeaturesToLayer
-
-
+from .geoserver_algs.postgis_schema2geoserver_ccar import PostGISSchema2GeoserverCCAR
 
 
 class LoadAlgorithmProvider(QgsProcessingProvider):
@@ -91,5 +90,5 @@ class LoadAlgorithmProvider(QgsProcessingProvider):
         cleared before calling this method.
         """
         for alg in [PostGISSchema2Geopackage(), PostGISSchema2Shapefile(), PostGISSchema2GeopackageReambulation(),
-                    Geopackage2PostGISSchemaReambulation(), AppendFeaturesToLayer()]:
+                    Geopackage2PostGISSchemaReambulation(), AppendFeaturesToLayer(), PostGISSchema2GeoserverCCAR()]:
             self.addAlgorithm(alg)
