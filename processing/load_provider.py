@@ -31,6 +31,10 @@ from .algs.AppendFeaturesToLayer import AppendFeaturesToLayer
 from .geoserver_algs.postgis_schema2geoserver_ccar import PostGISSchema2GeoserverCCAR
 from .geoserver_algs.postgis_schema2geoserver_ccar_not_advertised import PostGISSchema2GeoserverCCARNotAdvertised
 from .geoserver_algs.postgis2geoserver import PostGIS2Geoserver
+from .geoserver_algs.advertise_store_layers import AdvertiseStoreLayers
+from .geoserver_algs.deadvertise_store_layers import DeAdvertiseStoreLayers
+
+
 
 
 
@@ -95,5 +99,6 @@ class LoadAlgorithmProvider(QgsProcessingProvider):
         """
         for alg in [PostGISSchema2Geopackage(), PostGISSchema2Shapefile(), PostGISSchema2GeopackageReambulation(),
                     Geopackage2PostGISSchemaReambulation(), AppendFeaturesToLayer(), PostGISSchema2GeoserverCCAR(),
-                    PostGISSchema2GeoserverCCARNotAdvertised(), PostGIS2Geoserver()]:
+                    PostGISSchema2GeoserverCCARNotAdvertised(), PostGIS2Geoserver(), AdvertiseStoreLayers(),
+                    DeAdvertiseStoreLayers()]:
             self.addAlgorithm(alg)

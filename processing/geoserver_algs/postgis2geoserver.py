@@ -30,7 +30,6 @@ else:
     from qgis.core import QgsProcessingParameterDatabaseSchema
 
 import requests
-import psycopg2
 
 class PostGIS2Geoserver(QgsProcessingAlgorithm):
     # Constants used to refer to parameters
@@ -67,7 +66,8 @@ class PostGIS2Geoserver(QgsProcessingAlgorithm):
         return self.tr("Publish layers from PostGIS to Geoserver according to a metadata table and a featuretypes URL. "
                        'The metadata table is a QGIS layer containing fields named "tablename", "name", "title", "abstract". '
                        'The "tablename" field contains the name of the tables to be published and the other parameters are of Geoserver. '
-                       'An example of featuretypes URL is http://localhost:8080/geoserver/rest/workspaces/cite/datastores/Publishing/featuretypes , '
+                       'An example of featuretypes URL is ' 
+                       'http://localhost:8080/geoserver/rest/workspaces/cite/datastores/Publishing/featuretypes , '
                        'which targets the datastore Publishing in workspace cite.')
 
     def initAlgorithm(self, config=None):
@@ -80,7 +80,8 @@ class PostGIS2Geoserver(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterFeatureSource(
                 self.TABLE,
-                self.tr('Publishing Metadata Table')
+                self.tr('Publishing Metadata Table'),
+                [QgsProcessing.TypeVector] 
             )
         )            
             
