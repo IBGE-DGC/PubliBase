@@ -85,6 +85,7 @@ class AdvertiseStoreLayers(QgsProcessingAlgorithm):
         password = parameters[self.PASSWORD]
 
         # Debugging info
+        feedback.pushInfo('Input variables')
         feedback.pushInfo('url = ' + url)
         feedback.pushInfo('user = ' + user)
         feedback.pushInfo('password = ' + password)
@@ -94,8 +95,9 @@ class AdvertiseStoreLayers(QgsProcessingAlgorithm):
         headers = {'Accept': 'application/xml'}
         resp = requests.get(url, auth=(user,password), headers=headers)
         resp.raise_for_status() # raise error depending on the result
-        feedback.pushInfo('response for layers in store = ' + resp.text)
         xml = resp.text
+        feedback.pushInfo('xml featuretypes')
+        feedback.pushInfo(xml)
         feedback.pushInfo('')
         
         # Store featuretypes name parsing xml to Python
@@ -106,7 +108,8 @@ class AdvertiseStoreLayers(QgsProcessingAlgorithm):
             name = name_element.text
             featuretypes.append(name)
                 
-        feedback.pushInfo('featuretypes names = ' + str(featuretypes))
+        feedback.pushInfo('FeatureTypes Names')                
+        feedback.pushInfo(str(featuretypes_name))
         feedback.pushInfo('')
         
         # Store payloads in list      
@@ -126,6 +129,6 @@ class AdvertiseStoreLayers(QgsProcessingAlgorithm):
         for i, payload in enumerate(payloads):
             resp = requests.put(url + '/' + featuretypes[i], auth=(user, password), data=payload, headers=headers)
             feedback.pushInfo("Advertised layer was " + featuretypes[i])
-            feedback.pushInfo('response for above layer was = ' + resp.text)
+            feedback.pushInfo('server response for above layer was = ' + resp.text)
             
         return {'Result': 'Layers advertised'}
