@@ -34,6 +34,7 @@ from .geoserver_algs.postgis2geoserver import PostGIS2Geoserver
 from .geoserver_algs.advertise_store_layers import AdvertiseStoreLayers
 from .geoserver_algs.deadvertise_store_layers import DeAdvertiseStoreLayers
 from .geoserver_algs.replace_string_in_name_and_title_of_store_layers import ReplaceStringInNameAndTitleOfStoreLayers
+from .geoserver_algs.create_workspace import CreateWorkspace
 
 class LoadAlgorithmProvider(QgsProcessingProvider):
 
@@ -96,5 +97,5 @@ class LoadAlgorithmProvider(QgsProcessingProvider):
         for alg in [PostGISSchema2Geopackage(), PostGISSchema2Shapefile(), PostGISSchema2GeopackageReambulation(),
                     Geopackage2PostGISSchemaReambulation(), AppendFeaturesToLayer(), PostGISSchema2GeoserverCCAR(),
                     PostGISSchema2GeoserverCCARNotAdvertised(), PostGIS2Geoserver(), AdvertiseStoreLayers(),
-                    DeAdvertiseStoreLayers(), ReplaceStringInNameAndTitleOfStoreLayers()]:
+                    DeAdvertiseStoreLayers(), ReplaceStringInNameAndTitleOfStoreLayers(), CreateWorkspace()]:
             self.addAlgorithm(alg)
