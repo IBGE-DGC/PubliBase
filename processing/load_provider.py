@@ -36,6 +36,8 @@ from .geoserver_algs.deadvertise_store_layers import DeAdvertiseStoreLayers
 from .geoserver_algs.replace_string_in_name_and_title_of_store_layers import ReplaceStringInNameAndTitleOfStoreLayers
 from .geoserver_algs.create_workspace import CreateWorkspace
 from .geoserver_algs.download_styles_from_workspace import DownloadStylesFromWorkspace
+from .geoserver_algs.upload_styles_to_workspace import UploadStylesToWorkspace
+
 
 class LoadAlgorithmProvider(QgsProcessingProvider):
 
@@ -99,5 +101,5 @@ class LoadAlgorithmProvider(QgsProcessingProvider):
                     Geopackage2PostGISSchemaReambulation(), AppendFeaturesToLayer(), PostGISSchema2GeoserverCCAR(),
                     PostGISSchema2GeoserverCCARNotAdvertised(), PostGIS2Geoserver(), AdvertiseStoreLayers(),
                     DeAdvertiseStoreLayers(), ReplaceStringInNameAndTitleOfStoreLayers(), CreateWorkspace(),
-                    DownloadStylesFromWorkspace()]:
+                    DownloadStylesFromWorkspace(), UploadStylesToWorkspace()]:
             self.addAlgorithm(alg)

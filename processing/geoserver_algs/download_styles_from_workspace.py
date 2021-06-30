@@ -33,7 +33,7 @@ class DownloadStylesFromWorkspace(QgsProcessingAlgorithm):
         """
         Returns a translatable string with the self.tr() function.
         """
-        return QCoreApplication.translate("Publi Base: CreateWorkspace", string)    
+        return QCoreApplication.translate("Publi Base: DownloadStylesFromWorkspace", string)    
     
     def createInstance(self):
         return DownloadStylesFromWorkspace()
