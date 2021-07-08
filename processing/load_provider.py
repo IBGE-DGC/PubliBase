@@ -38,6 +38,8 @@ from .geoserver_algs.create_workspace import CreateWorkspace
 from .geoserver_algs.download_styles_from_workspace import DownloadStylesFromWorkspace
 from .geoserver_algs.upload_styles_to_workspace import UploadStylesToWorkspace
 from .geoserver_algs.associate_layers_to_workspace_styles import AssociateLayersToWorkspaceStyles
+from .geoserver_algs.find_layers_without_workspace_style import FindLayersWithoutWorkspaceStyle
+
 
 
 
@@ -103,5 +105,6 @@ class LoadAlgorithmProvider(QgsProcessingProvider):
                     Geopackage2PostGISSchemaReambulation(), AppendFeaturesToLayer(), PostGISSchema2GeoserverCCAR(),
                     PostGISSchema2GeoserverCCARNotAdvertised(), PostGIS2Geoserver(), AdvertiseStoreLayers(),
                     DeAdvertiseStoreLayers(), ReplaceStringInNameAndTitleOfStoreLayers(), CreateWorkspace(),
-                    DownloadStylesFromWorkspace(), UploadStylesToWorkspace(), AssociateLayersToWorkspaceStyles()]:
+                    DownloadStylesFromWorkspace(), UploadStylesToWorkspace(), AssociateLayersToWorkspaceStyles(),
+                    FindLayersWithoutWorkspaceStyle()]:
             self.addAlgorithm(alg)
