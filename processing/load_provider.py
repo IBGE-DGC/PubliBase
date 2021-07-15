@@ -23,11 +23,14 @@ from qgis.core import QgsProcessingProvider
 from processing.core.ProcessingConfig import Setting, ProcessingConfig
 
 # Import algorithms
+# Algorithms in general
 from .algs.postgis_schema2geopackage import PostGISSchema2Geopackage
 from .algs.postgis_schema2geopackage_reambulation import PostGISSchema2GeopackageReambulation
 from .algs.geopackage2postgis_schema_reambulation import Geopackage2PostGISSchemaReambulation
 from .algs.postgis_schema2shapefile import PostGISSchema2Shapefile
 from .algs.AppendFeaturesToLayer import AppendFeaturesToLayer
+
+# Geoserver algorithms
 from .geoserver_algs.postgis_schema2geoserver_ccar import PostGISSchema2GeoserverCCAR
 from .geoserver_algs.postgis_schema2geoserver_ccar_not_advertised import PostGISSchema2GeoserverCCARNotAdvertised
 from .geoserver_algs.postgis2geoserver import PostGIS2Geoserver
@@ -39,6 +42,7 @@ from .geoserver_algs.download_styles_from_workspace import DownloadStylesFromWor
 from .geoserver_algs.upload_styles_to_workspace import UploadStylesToWorkspace
 from .geoserver_algs.associate_layers_to_workspace_styles import AssociateLayersToWorkspaceStyles
 from .geoserver_algs.find_layers_without_workspace_style import FindLayersWithoutWorkspaceStyle
+from .geoserver_algs.delete_styles_from_workspace import DeleteStylesFromWorkspace 
 
 
 
@@ -106,5 +110,5 @@ class LoadAlgorithmProvider(QgsProcessingProvider):
                     PostGISSchema2GeoserverCCARNotAdvertised(), PostGIS2Geoserver(), AdvertiseStoreLayers(),
                     DeAdvertiseStoreLayers(), ReplaceStringInNameAndTitleOfStoreLayers(), CreateWorkspace(),
                     DownloadStylesFromWorkspace(), UploadStylesToWorkspace(), AssociateLayersToWorkspaceStyles(),
-                    FindLayersWithoutWorkspaceStyle()]:
+                    FindLayersWithoutWorkspaceStyle(), DeleteStylesFromWorkspace()]:
             self.addAlgorithm(alg)

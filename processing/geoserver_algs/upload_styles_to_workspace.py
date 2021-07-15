@@ -15,7 +15,8 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsProcessingAlgorithm,
                        QgsProcessingParameterString,
                        QgsProcessingParameterFile,
-                       QgsProcessingException)
+                       QgsProcessingException,
+                       QgsProcessingParameterBoolean)
 
 import requests
 import os
@@ -24,16 +25,15 @@ from zipfile import ZipFile
 
 
 
-
 class SLDFolderUploader:
-    # Uploads a folder with SLDs to a Geoserver Workspace
+    '''Uploads a folder with SLDs to a Geoserver Workspace'''
     
     def __init__(self, geoserver_url, workspace, folder, 
                  user='admin', password='geoserver'):
         
         # Get Styles Workspace URL        
-        geoserver_url = geoserver_url.rstrip('web/')
-        self.url = geoserver_url + u'/rest/workspaces/' + workspace + '/styles' 
+        self.geoserver_url = geoserver_url.rstrip('web/')
+        self.styles_url = self.geoserver_url + u'/rest/workspaces/' + workspace + '/styles' 
         
         # Store folder and workspace
         self.folder = folder
@@ -45,6 +45,9 @@ class SLDFolderUploader:
         
         # List of sld files in folder
         self.filelist = [file for file in glob.glob(os.path.join(self.folder, '*.sld'))]
+        
+        # Iniatialize the list that will store the existing styles to replace if required
+        self.existing_styles_filelist = []
 
     def zip_slds(self):
         
@@ -64,6 +67,10 @@ class SLDFolderUploader:
 
     def upload_zipfiles(self, feedback):
 
+        feedback.pushInfo('\nUploading styles\n')
+        # Clear the list of existing styles
+        self.existing_styles_filelist.clear()
+        
         # Headers of POST request
         headers = {'Content-Type': 'application/zip'}
         
@@ -82,7 +89,7 @@ class SLDFolderUploader:
             parameters = {'name': sld_basename}
             
             with open(sld_path_zip, 'rb') as fileobj:
-                res = requests.post(self.url, auth=(self.user, self.password), 
+                res = requests.post(self.styles_url, auth=(self.user, self.password), 
                                     data = fileobj, headers=headers, 
                                     params=parameters)
                 
@@ -90,9 +97,52 @@ class SLDFolderUploader:
                     res.raise_for_status()
                 except Exception as e:
                     feedback.reportError('Error in upload of style {}: {}'.format(sld_basename_ext, e))
+                    print(e)
+                    # Append file path to existing files 
+                    # to be overwritten later if required
+                    if res.status_code == 403:
+                        self.existing_styles_filelist.append(sld_path)                       
+                    
                 else:
                     feedback.pushInfo('SLD file {} was uploaded successfully'.format(sld_basename_ext))
                     
+ 
+    def overwrite_existing_styles(self, feedback):
+        
+        feedback.pushInfo('\nOverwriting existing styles\n')
+        # Headers of PUT request
+        headers = {'Content-Type': 'application/zip'}
+        
+        # Overwrite the existing styles with their zipped files 
+        for sld_path in self.existing_styles_filelist:
+            # Build zip filename to save the style
+            sld_path_name = os.path.splitext(sld_path)[0] # Complete path without extension
+            sld_path_zip = sld_path_name + '.zip'
+    
+            # Get only the basename with extension 
+            sld_basename_ext = os.path.basename(sld_path) 
+            
+            # Upload SLD to Geoserver Workspace
+            sld_basename = os.path.splitext(sld_basename_ext)[0] # Style name on Geoserver
+            
+            parameters = {'name': sld_basename}
+            
+            with open(sld_path_zip, 'rb') as fileobj:
+                print('Trying to overwrite the style {}'.format(parameters['name']))
+                url = self.styles_url + '/' + parameters['name']
+                res_put = requests.put(url, 
+                                       auth=(self.user, self.password),
+                                       data = fileobj, 
+                                       headers=headers)
+            
+                try:
+                    res_put.raise_for_status()
+                except Exception as e_put:
+                    feedback.reportError('Error in overwriting style {}: {}'.format(parameters['name'], e_put))
+                else:
+                    feedback.pushInfo('Style {} was overwritten successfully'.format(parameters['name']))
+                    
+            
 
 
 class UploadStylesToWorkspace(QgsProcessingAlgorithm):
@@ -101,6 +151,7 @@ class UploadStylesToWorkspace(QgsProcessingAlgorithm):
     URL = 'URL'
     WORKSPACE = 'WORKSPACE'
     FOLDER = 'FOLDER'
+    OVERWRITE = 'OVERWRITE'
     USER = 'USER'
     PASSWORD = 'PASSWORD'
 
@@ -148,20 +199,26 @@ class UploadStylesToWorkspace(QgsProcessingAlgorithm):
         self.addParameter(QgsProcessingParameterFile(self.FOLDER, 
                                                      self.tr("Folder"), 
                                                      1, optional=False))            
-            
+        
+        # Overwrite parameter
+        self.addParameter(QgsProcessingParameterBoolean(self.OVERWRITE,
+                                                        self.tr("Overwrite existing styles"),
+                                                        False))
+        
+        
         # Geoserver user            
         self.addParameter(QgsProcessingParameterString(
             self.USER,
             self.tr("User"),
             "admin",
-            optional=False))    
+            optional=True))    
 
         # Geoserver password
         self.addParameter(QgsProcessingParameterString(
             self.PASSWORD,
             self.tr("Password"),
             "geoserver",
-            optional=False))
+            optional=True))
 
 
     def processAlgorithm(self, parameters, context, feedback):
@@ -172,6 +229,7 @@ class UploadStylesToWorkspace(QgsProcessingAlgorithm):
         url = self.parameterAsString(parameters, self.URL, context)
         workspace = self.parameterAsString(parameters, self.WORKSPACE, context)
         folder = parameters[self.FOLDER]
+        overwrite = parameters[self.OVERWRITE]
         
         user = parameters[self.USER]
         password = parameters[self.PASSWORD]
@@ -181,6 +239,7 @@ class UploadStylesToWorkspace(QgsProcessingAlgorithm):
         feedback.pushInfo('url = ' + url)
         feedback.pushInfo('workspace = ' + workspace)
         feedback.pushInfo('folder = ' + folder)
+        feedback.pushInfo('overwrite = ' + str(overwrite))
         
         feedback.pushInfo('user = ' + user)
         feedback.pushInfo('password = ' + password)
@@ -194,6 +253,10 @@ class UploadStylesToWorkspace(QgsProcessingAlgorithm):
         
         # Upload
         folder1.upload_zipfiles(feedback)
+        
+        # Overwrite existing styles
+        if overwrite:
+            folder1.overwrite_existing_styles(feedback)
         
 
         return {'Result': 'Styles uploaded'}
