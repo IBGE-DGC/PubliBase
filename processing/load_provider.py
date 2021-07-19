@@ -44,7 +44,8 @@ from .geoserver_algs.associate_layers_to_workspace_styles import AssociateLayers
 from .geoserver_algs.find_layers_without_workspace_style import FindLayersWithoutWorkspaceStyle
 from .geoserver_algs.delete_styles_from_workspace import DeleteStylesFromWorkspace 
 
-
+# Utils algorithms
+from .utils_algs.save_project_vector_styles import SaveProjectVectorStyles
 
 
 class LoadAlgorithmProvider(QgsProcessingProvider):
@@ -110,5 +111,5 @@ class LoadAlgorithmProvider(QgsProcessingProvider):
                     PostGISSchema2GeoserverCCARNotAdvertised(), PostGIS2Geoserver(), AdvertiseStoreLayers(),
                     DeAdvertiseStoreLayers(), ReplaceStringInNameAndTitleOfStoreLayers(), CreateWorkspace(),
                     DownloadStylesFromWorkspace(), UploadStylesToWorkspace(), AssociateLayersToWorkspaceStyles(),
-                    FindLayersWithoutWorkspaceStyle(), DeleteStylesFromWorkspace()]:
+                    FindLayersWithoutWorkspaceStyle(), DeleteStylesFromWorkspace(), SaveProjectVectorStyles()]:
             self.addAlgorithm(alg)
